@@ -1,14 +1,12 @@
-document.getElementById("htmlCode").value="<div>\n\n</div>";
-document.getElementById("cssCode").value="<style>\n\n</style>";
-document.getElementById("jsCode").value="<script>\n\n</script>";
+const frame = document.getElementById("preview-window").contentWindow.document;
 
 function showPreview(){
-    var htmlCode = document.getElementById("htmlCode").value;
-    var cssCode = ""+document.getElementById("cssCode").value+"";
-    var jsCode = ""+document.getElementById("jsCode").value+"";
-    var frame = document.getElementById("preview-window").contentWindow.document;
+    const htmlCode = document.getElementById("htmlCode").value;
+    const cssCode = ""+document.getElementById("cssCode").value+"";
+    const jsCode = ""+document.getElementById("jsCode").value+"";
     frame.open();
     frame.write(htmlCode+cssCode+jsCode);
+    addToLocal(htmlCode, cssCode, jsCode);
     frame.close();
 }
 
@@ -35,3 +33,25 @@ function show_all(){
         document.getElementById("result").style.display="none";
     }
 }
+
+function addToLocal(html, css, js) {
+    window.localStorage.setItem("html_code", html);
+    window.localStorage.setItem("css_code", css);
+    window.localStorage.setItem("js_code", js);
+}
+
+function setSavedCode() {
+    const savedHTML = window.localStorage.getItem("html_code") || "<div>\n\n</div>";
+    const savedCSS = window.localStorage.getItem("css_code") || "<style>\n\n</style>";
+    const savedJS = window.localStorage.getItem("js_code") || "<script>\n\n</script>";
+    const savedCode = savedHTML+savedCSS+savedJS;
+
+    document.getElementById("htmlCode").value=`${savedHTML}`;
+    document.getElementById("cssCode").value=`${savedCSS}`;
+    document.getElementById("jsCode").value=`${savedJS}`;
+
+    frame.open();
+    savedCode && frame.write(savedCode);
+    frame.close();
+}
+setSavedCode();
